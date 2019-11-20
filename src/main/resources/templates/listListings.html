@@ -1,0 +1,86 @@
+<!--
+        There are 30 points to be earned in adding to the HTML file
+        There are 6 TODO's todo
+-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+<!--
+        extra 5 points
+        TODO EXTRA add a ThymeLeaf tag to set the text of the title element to text passed in from the controller
+-->
+    <title>The Java Final</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" media="screen"/>
+</head>
+<body>
+<div class="container">
+    <a href='/listings/new'>Create New Listing</a>
+
+    <form class="form-horizontal" th:action="@{/listings/search}" method="post">
+        <div>
+            <label>City:</label>
+            <div><input type="text" name="city"/></div>
+
+<!--
+        5 points
+        TODO #1 Add search fields for
+            price
+            bed rooms
+            square feet
+            Note: These three fields are all numbers
+-->
+            <div><button type="submit">Submit</button></div>
+        </div>
+    </form>
+    <div th:if="${#lists.isEmpty(listings)}">
+        <h2>Nothing found</h2>
+        <h3>Try Again</h3>
+    </div>
+    <div th:if="${not #lists.isEmpty(listings)}">
+        <h3 th:text="'Listing Count: ' + ${listings.size()}"></h3>
+        <h4 th:text=" ${criteria}"></h4>
+        <table class="blueTable">
+            <thead>
+            <tr>
+<!--
+    This is just for your reference to remind you or the attributes you can choose to display
+        propertyType,   address,    city,       zip,
+        price,          beds,       baths,      location,
+        sqFt,           lotSize,    yearBuilt,  daysOnMarket,
+        pricePerSqFt,   hoa,        link,       latitude,       longitude
+-->
+                <th>City</th>
+                <th>Zip</th>
+<!--
+                TODO as you add columns below do not forget to add the column header up here
+-->
+            </tr>
+            </thead>
+            <tr th:each="listing : ${listings}">
+                <td th:text="${listing.city}">City</td>
+                <td th:text="${listing.zip}" align="right">Zip</td>
+<!--
+            5 points
+                TODO #2 add price column
+                        right justify the number in the TD field
+                        EXTRA 5 points if you format the number as a currency
+
+            5 points
+                TODO #3 add the sqFt attribute
+                        right justify the number
+            5 points
+                TODO #4 add the number of beds and baths. Put them in the same cell and separate with a ' / '
+                        center the text
+            5 points
+                TODO #5 add the location attribute
+
+            5 points
+                TODO #6 add the link attribute
+                        EXTRA 5 points if you put the link in an a href field. Make the listing address the text to click on
+-->
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
