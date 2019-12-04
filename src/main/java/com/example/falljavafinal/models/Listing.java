@@ -180,6 +180,29 @@ public class Listing {
         this.longitude = longitude;
     }
 
+    @Override
+    public String toString() {
+        return "Listing{" +
+                "propertyType='" + propertyType + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", zip='" + zip + '\'' +
+                ", location='" + location + '\'' +
+                ", link='" + link + '\'' +
+                ", price=" + price +
+                ", beds=" + beds +
+                ", sqFt=" + sqFt +
+                ", lotSize=" + lotSize +
+                ", yearBuilt=" + yearBuilt +
+                ", daysOnMarket=" + daysOnMarket +
+                ", pricePerSqFt=" + pricePerSqFt +
+                ", hoa=" + hoa +
+                ", baths=" + baths +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
+
     /**
      * loadRecords
      *
