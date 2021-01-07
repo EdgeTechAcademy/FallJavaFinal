@@ -10,19 +10,49 @@
 
     <form class="form-horizontal" th:action="@{/done/search}" method="post">
         <div>
-            <label>City:</label>
-            <div><input type="text" name="city"/></div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Search Field</th>
+                    <th>Order By</th>
+                    <th><input type="radio" name="ascDesc" value="1" checked>Asc
+                    <input type="radio" name="ascDesc" value="-1">Desc
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><label>City:</label></td>
+                    <td><input type="text" name="city" th:value="${city}"/></td>
+                    <td><input type="radio" name="orderBy" value="city">City</td>
+                </tr>
+                <tr>
+                    <td><label>Max Price:</label></td>
+                    <td><input type="number" name="price" th:value="${price}"/></td>
+                    <td><input type="radio" name="orderBy" value="price">Price</td>
+                </tr>
+                <tr>
+                    <td><label>Bedrooms:</label></td>
+                    <td><input type="number" name="beds" th:value="${beds}"/></td>
+                    <td><input type="radio" name="orderBy" value="beds"># of Beds</td>
+                </tr>
+                <tr>
+                    <td><label>Sq. Feet:</label></td>
+                    <td><input type="number" name="sqFt" th:value="${sqFt}"/></td>
+                    <td><input type="radio" name="orderBy" value="sqFt">Sq Ft</td>
+                </tr>
+                <tr>
+                    <td>
+                        <button type="submit">Submit</button>
+                    </td>
+                    <td></td>
+                    <td><input type="radio" name="orderBy" value="natural" checked>Natural</td>
+                </tr>
+                </tbody>
+            </table>
+            <div>
 
-            <label>Max Price:</label>
-            <div><input type="number" name="price"/></div>
-
-            <label>Bedrooms:</label>
-            <div><input type="number" name="beds"/></div>
-
-            <label>Sq. Feet:</label>
-            <div><input type="number" name="sqFt"/></div>
-
-            <div><button type="submit">Submit</button></div>
+            </div>
         </div>
     </form>
     <div th:if="${#lists.isEmpty(listings)}">
@@ -58,7 +88,9 @@
                 <td th:text="${listing.sqFt}" align="right">Sq Ft</td>
                 <td th:text="${listing.beds} + ' / ' + ${listing.baths}" align="center">Beds</td>
                 <td th:text="${listing.location}">Location</td>
-                <td><a th:href="${listing.link}"><div th:text="${listing.address}"></div></a></td>
+                <td><a th:href="${listing.link}">
+                    <div th:text="${listing.address}"></div>
+                </a></td>
             </tr>
         </table>
     </div>
