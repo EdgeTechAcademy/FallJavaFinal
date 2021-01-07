@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/done")
@@ -19,14 +17,12 @@ public class FinishedController {
     //  this is the List of Listings
     //      add real estate properties are saved in this List
     private List<Listing> listings;
-    Listing averageListing = new Listing("", "", "Averages for these Listings:", "", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
     //  this is our Controller constructor.
     //      here we will load the Listings.csv file
     //      which will be our database listing of homes in Dallas
     public FinishedController() {
         listings = Listing.loadRecords("src/Listings.csv");
-        listings.add(0, averageListing);
     }
 
     //  This entry point will list all properties
@@ -45,59 +41,100 @@ public class FinishedController {
     //  entry point provided for you for the search request in the listing page
     //      initially in only receives the city name. You will add more to it in this exam
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public String search(@RequestParam String city, @RequestParam Integer price,
-                         @RequestParam Integer sqFt, @RequestParam Integer beds,
-                         @RequestParam String orderBy, @RequestParam Integer ascDesc , Model model) {
+    public String search(@RequestParam String city,  @RequestParam Integer price,
+                         @RequestParam Integer sqFt, @RequestParam Integer beds, Model model) {
         List<Listing> matchedHomes = listings;
 
-        String criteria = "Found Matching Listings for Homes ";
+        String criteria = "Found Matching Listings:";
 
         if (city != null && city.length() > 0) {
-            matchedHomes = matchedHomes.stream().filter(l -> l.getCity().equalsIgnoreCase(city)).collect(Collectors.toList());
-            criteria += "in the City of " + city + " ";
+            matchedHomes = findByCity(matchedHomes, city);
+            criteria += " for City: " + city;
         }
 
         if (sqFt != null && sqFt > 0) {
-            matchedHomes = matchedHomes.stream().filter(l -> l.getSqFt() == sqFt).collect(Collectors.toList());
-            criteria += "with at least: " + sqFt + " Sq Ft ";
+            matchedHomes = findBySqFt(matchedHomes, sqFt);
+            criteria += ", with at least: " + sqFt + " Sq Ft";
         }
 
         if (price != null && price > 0) {
-            matchedHomes = matchedHomes.stream().filter(l -> l.getPrice() == price).collect(Collectors.toList());
-            criteria += "for less than $" + String.format("%,d", price) + " ";
+            matchedHomes = findByPrice(matchedHomes, price);
+            criteria += ", for less than $" + price;
         }
 
         if (beds != null && beds > 0) {
-            matchedHomes = matchedHomes.stream().filter(l -> l.getBeds() == beds).collect(Collectors.toList());
-            criteria += "with " + beds + "+ bed rooms ";
+            matchedHomes = findByBeds(matchedHomes, beds);
+            criteria += ", " + beds + "+ beds";
         }
 
-        switch (orderBy) {
-            case "city":  Collections.sort(matchedHomes, (l1, l2) -> ascDesc * (l1.getCity() .compareTo(l2.getCity())));    break;
-            case "price": Collections.sort(matchedHomes, (l1, l2) -> ascDesc * (l1.getPrice() - l2.getPrice()));            break;
-            case "sqFt":  Collections.sort(matchedHomes, (l1, l2) -> ascDesc * (l1.getSqFt()  -  l2.getSqFt()));            break;
-            case "beds":  Collections.sort(matchedHomes, (l1, l2) -> ascDesc * (l1.getBeds()  -  l2.getBeds()));            break;
-        }
-
-        if (matchedHomes.size() > 0) {
-            int avePrice = 0, aveSqFt = 0;
-            for (Listing listing : matchedHomes) {
-                avePrice += listing.getPrice();
-                aveSqFt += listing.getSqFt();
-            }
-            averageListing.setPrice(avePrice / matchedHomes.size());
-            averageListing.setSqFt(aveSqFt / matchedHomes.size());
-            matchedHomes.remove(averageListing);
-            matchedHomes.add(0,averageListing);
-        }
-
-        model.addAttribute("beds", beds);
-        model.addAttribute("price", price);
-        model.addAttribute("city", city);
-        model.addAttribute("sqFt", sqFt);
         model.addAttribute("title", "Home Listings");
         model.addAttribute("criteria", criteria);
         model.addAttribute("listings", matchedHomes);
         return "done";
+    }
+
+    public List<Listing> findByCity(List<Listing> list, String city) {
+        //  shortList will contain the listings whose city names was matched from the web page
+        List<Listing> shortList = new ArrayList<>();
+
+        city = city.toLowerCase();          //  lower case the name to standardize the format (all lowercase)
+        //  look at all listings. One at a time
+        for (Listing Listing : list) {
+            //  check to see if the first or last name contains the name given
+            //  we will convert the first and last names to lowercase since contains does a case sensitive compare
+            if (Listing.getCity().toLowerCase().contains(city)) {
+                shortList.add(Listing);
+            }
+        }
+        //  return the list of Listings we found matching the name provided
+        return shortList;
+    }
+
+    public List<Listing> findByPrice(List<Listing> list, int price) {
+        //  shortList will contain the listings where the price is lower than the search price
+        List<Listing> shortList = new ArrayList<>();
+
+        //  look at all listings. One at a time
+        for (Listing Listing : list) {
+            //  check to see if the first or last name contains the name given
+            //  we will convert the first and last names to lowercase since contains does a case sensitive compare
+            if (Listing.getPrice() <= price) {
+                shortList.add(Listing);
+            }
+        }
+        //  return the list of Listings we found matching the name provided
+        return shortList;
+    }
+
+    public List<Listing> findByBeds(List<Listing> list, int beds) {
+        //  shortList will contain the listings with at least the number of bed rooms searched for
+        List<Listing> shortList = new ArrayList<>();
+
+        //  look at all listings. One at a time
+        for (Listing Listing : list) {
+            //  check to see if the first or last name contains the name given
+            //  we will convert the first and last names to lowercase since contains does a case sensitive compare
+            if (Listing.getBeds() >= beds) {
+                shortList.add(Listing);
+            }
+        }
+        //  return the list of Listings we found matching the name provided
+        return shortList;
+    }
+
+    public List<Listing> findBySqFt(List<Listing> list, int sqFt) {
+        //  shortList will contain the listings for all homes no bigger than the sq footage searched for
+        List<Listing> shortList = new ArrayList<>();
+
+        //  look at all listings. One at a time
+        for (Listing Listing : list) {
+            //  check to see if the first or last name contains the name given
+            //  we will convert the first and last names to lowercase since contains does a case sensitive compare
+            if (Listing.getSqFt() <= sqFt) {
+                shortList.add(Listing);
+            }
+        }
+        //  return the list of Listings we found matching the name provided
+        return shortList;
     }
 }
