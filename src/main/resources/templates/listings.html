@@ -6,21 +6,19 @@
 </head>
 <body>
 <div class="container">
-    <a href='/listings/new'>Create New Listing</a>
-
-    <form class="form-horizontal" th:action="@{/done/search}" method="post">
+    <form class="form-horizontal" th:action="@{/listings/search}" method="post">
         <div>
             <label>City:</label>
-            <div><input type="text" name="city"/></div>
+            <div><input type="text" th:value="${city}" name="city"/></div>
 
             <label>Max Price:</label>
-            <div><input type="number" name="price"/></div>
+            <div><input type="number" " name="price"/></div>
 
             <label>Bedrooms:</label>
-            <div><input type="number" name="beds"/></div>
+            <div><input type="number" th:value="${bed}" name="beds"/></div>
 
             <label>Sq. Feet:</label>
-            <div><input type="number" name="sqFt"/></div>
+            <div><input type="number" th:value="${sqFt}" name="sqFt"/></div>
 
             <div><button type="submit">Submit</button></div>
         </div>
@@ -30,7 +28,7 @@
         <h3>Try Again</h3>
     </div>
     <div th:if="${not #lists.isEmpty(listings)}">
-        <h3 th:text="'Listing Count: ' + ${listings.size()}"></h3>
+        <h3 th:text="'Matching Homes: ' + ${listings.size()}"></h3>
         <h4 th:text=" ${criteria}"></h4>
         <table class="blueTable">
             <thead>
