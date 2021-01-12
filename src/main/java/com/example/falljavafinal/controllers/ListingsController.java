@@ -54,7 +54,7 @@ public class ListingsController {
         }
 
         if (sqFt != null && sqFt > 0) {
-            matchedHomes = matchedHomes.stream().filter(l -> l.getSqFt() >= sqFt).collect(Collectors.toList());
+            matchedHomes = matchedHomes.stream().filter(l -> l.getSqFt() == sqFt).collect(Collectors.toList());
             criteria += ", with at least: " + sqFt + " Sq Ft";
         }
 
