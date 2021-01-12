@@ -53,10 +53,7 @@ public class ListingsController {
             criteria += " for City: " + city;
         }
 
-        if (sqFt != null && sqFt > 0) {
-            matchedHomes = matchedHomes.stream().filter(l -> l.getSqFt() == sqFt).collect(Collectors.toList());
-            criteria += ", with at least: " + sqFt + " Sq Ft";
-        }
+        //  TODO you need to add the code here to search by Sq Ft
 
         if (price != null && price > 0) {
             matchedHomes = matchedHomes.stream().filter(l -> l.getPrice() <= price).collect(Collectors.toList());
